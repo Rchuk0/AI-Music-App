@@ -13,16 +13,9 @@ body{
 .song_name{
   font-size: 20px;
 }
-  canvas{
-    width: 300px;
-    height: 300px;
-        border: black;
-        border-top-right-radius: 50px;
-        border-bottom-left-radius: 50px;
-        border-top-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        box-shadow: 10px 10px 10px black;
-        border-style: solid;
-        border-width: 4px;
-        margin-top: 80px;
+canvas{
+  background-color: #000000;
+  border: 5px solid white;
+  border-radius: 20px;
+  box-shadow: 5px 5px 5px #73cfd8;
 }
