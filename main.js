@@ -1,68 +1,105 @@
-Peter_pan_song="";
-Harry_potter_theme_song="";
-rightWrist_x = 0;
-rightWrist_y = 0;
-leftWrist_x = 0;
-leftWrist_y = 0;
-scoreleftWrist = 0;
-song_name = "";
+song1 = "";
+song2 = "";
 
-function setup(){
-    canvas = createCanvas(600,430);
-    canvas.center();
-    canvas.position(325, 170);
+song1_status = "";
+song2_status = "";
 
-    video = createCapture(VIDEO);
-    video.hide();
+scoreRightWrist = 0;
+scoreLeftWrist = 0;
 
-    poseNet = ml5.poseNet(video,modelLoaded);
-    poseNet.on('pose',gotposes);
+rightWristX = 0;
+rightWristY = 0;
+
+leftWristX = 0;
+leftWristY = 0;
+
+function preload()
+{
+	song1 = loadSound("music.mp3");
+	song2 = loadSound("music2.mp3");
 }
 
-function preload(){
-    Peter_pan_song = loadSound("music2.mp3");
-    Harry_potter_theme_song = loadSound("music.mp3");
+function setup() {
+	canvas =  createCanvas(600, 450);
+    canvas.position(340, 155);
+
+	video = createCapture(VIDEO);
+	video.hide();
+
+	poseNet = ml5.poseNet(video, modelLoaded);
+	poseNet.on('pose', gotPoses);
 }
 
-function draw(){
-    image(video,0,0,600,530);
-
-    fill("#00ff00");
-    stroke("#ff0000");
-
-    song_name = Peter_pan_song.isPlaying();
-    console.log(song_name);
-
-    if(scoreleftWrist > 0.2){
-        circle(leftWrist_x,leftWrist_y,20);
-        Harry_potter_theme_song.stop();
-        if(song_name == false){
-            Peter_pan_song.play();
-        }
-        else{
-            console.log("Song Name: Peter Pan Song");
-            document.getElementById("song_id").innerHTML = "Song Name: Peter Pan Song";
-        }
-    }
+function modelLoaded() {
+  console.log('PoseNet Is Initialized');
 }
 
-function modelLoaded(){
-    console.log("poseNet Is Initialized");
+function gotPoses(results)
+{
+  if(results.length > 0)
+  {
+	console.log(results);
+	scoreRightWrist =  results[0].pose.keypoints[10].score;
+	scoreLeftWrist =  results[0].pose.keypoints[9].score;
+	console.log("scoreRightWrist = " + scoreRightWrist + "scoreLeftWrist = " + scoreLeftWrist);
+	
+	rightWristX = results[0].pose.rightWrist.x;
+	rightWristY = results[0].pose.rightWrist.y;
+	console.log("rightWristX = " + rightWristX +" rightWristY = "+ rightWristY);
+
+	leftWristX = results[0].pose.leftWrist.x;
+	leftWristY = results[0].pose.leftWrist.y;
+	console.log("leftWristX = " + leftWristX +" leftWristY = "+ leftWristY);
+		
+  }
 }
 
-function gotposes(results){
-    if(results.length > 0){
-        console.log(results);
+function draw() {
+	image(video, 0, 0, 600, 500);
+	
+	song1_status = song1.isPlaying();
+	song2_status = song2.isPlaying();
 
-        scoreleftWrist = results[0].pose.keypoints[9].score;
-        console.log(scoreleftWrist);
+	fill("#FF0000");
+	stroke("#FF0000");
 
-        leftWrist_x = results[0].pose.leftWrist.x;
-        leftWrist_y = results[0].pose.leftWrist.y;
-        console.log("leftWrist_x = "+leftWrist_x+" leftWrist_y = "+leftWrist_y);
+	if(scoreRightWrist > 0.2)
+	{ 
+		circle(rightWristX,rightWristY,20);
 
-        rightWrist_x = results[0].pose.rightWrist.x;
-        rightWrist_y = results[0].pose.rightWrist.y;
-        console.log("rightWrist_x = "+rightWrist_x+" rightWrist_y = "+rightWrist_y);
-    }
+			song2.stop();
+
+		if(song1_status == false)
+		{
+			song1.play();
+			document.getElementById("song").innerHTML = "Playing - Lover";
+		}
+	}
+
+	if(scoreLeftWrist > 0.2)
+	{
+		circle(leftWristX,leftWristY,20);
+
+			song1.stop();
+
+		if(song2_status == false)
+		{
+			song2.play();
+			document.getElementById("song").innerHTML = "Playing - New Rules";
+		}
+	}
+
 }
+
+function play()
+{
+	song.play();
+	song.setVolume(1);
+	song.rate(1);
+}
+
+
+
+
+
+
